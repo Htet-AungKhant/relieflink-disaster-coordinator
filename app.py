@@ -23,11 +23,7 @@ def get_database():
 
 db = get_database()
 
-# Database Connection Alert (Does NOT block execution if fallback data is used)
-if db is None:
-    st.sidebar.error("⚠️ Database: Disconnected (Fallback Active)")
-else:
-    st.sidebar.success("✅ Database: Connected to MongoDB Atlas")
+
 
 # --- CUSTOM CSS ---
 st.markdown("""
