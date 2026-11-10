@@ -2,7 +2,13 @@ import streamlit as st
 import pymongo
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+import os
+import pymongo
+import streamlit as st
 
+mongo_uri = st.secrets.get("MONGO_URI", "mongodb://localhost:27017")
+client = pymongo.MongoClient(mongo_uri)
+db = client["relieflink_db"]
 st.set_page_config(page_title="ReliefLink AI Dashboard", page_icon="🌍", layout="wide")
 
 st.markdown("""
