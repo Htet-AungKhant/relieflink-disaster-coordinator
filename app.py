@@ -2,13 +2,38 @@ import streamlit as st
 import pymongo
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-import os
 import pymongo
 import streamlit as st
 
-mongo_uri = st.secrets.get("MONGO_URI", "mongodb://localhost:27017")
-client = pymongo.MongoClient(mongo_uri)
-db = client["relieflink_db"]
+import os
+
+mongo_uri = os.getenv(
+    "MONGO_URI",
+    "mongodb://localhost:27017"
+)
+import os
+
+mongo_uri = st.secrets.get("MONGO_URI", os.getenv("MONGO_URI", ""))
+
+@st.cache_resource
+def get_database():
+    if not mongo_uri:
+        return None
+    try:
+      
+        client = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+       
+        client.admin.command('ping')
+        return client["relieflink_db"]
+    except Exception:
+        return None
+
+db = get_database()
+
+if db is None:
+    st.error("⚠️ Database Connection Failed! Please check your MongoDB Atlas URI in Streamlit Secrets.")
+    st.info("💡 Make sure you added MONGO_URI in Streamlit Cloud -> Settings -> Secrets.")
+    st.stop()
 st.set_page_config(page_title="ReliefLink AI Dashboard", page_icon="🌍", layout="wide")
 
 st.markdown("""
